@@ -3,7 +3,8 @@ name: Test install scripts
 on: [push]
 
 jobs:
-  windows:
+  test-dev-windows:
     runs-on: [self-hosted, windows]
     steps:
-      run: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
+      - name: Test dev environment on Windows
+        run: Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
