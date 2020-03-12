@@ -1,6 +1,6 @@
-name: Test install scripts
+name: Dev environment install scripts
 
-on: [push]
+on: [pull_request]
 
 jobs:
   test-dev-windows:
@@ -8,3 +8,13 @@ jobs:
     steps:
       - name: Test dev environment on Windows
         run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
+  test-dev-ubuntu:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Test dev environment on Ubuntu
+        run: bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)
+  test-dev-ubuntu:
+    runs-on: [self-hosted, macos]
+    steps:
+      - name: Test dev environment on macOS
+        run: bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)
