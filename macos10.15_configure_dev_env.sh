@@ -132,6 +132,10 @@ brew install mariadb@10.4
 if [ ! $? = 0 ]; then
     exit 1
 fi
+sudo mysql -e "SELECT VERSION();"
+if [ ! $? = 0 ]; then
+    exit 1
+fi
 
 # Install
 brew install node@12

@@ -93,6 +93,8 @@ choco install mariadb --version=10.4.8 -y
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
+mysql -e "SELECT VERSION();"
+
 # Install
 choco install nodejs --version=12.13.1 -y
 

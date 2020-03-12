@@ -151,6 +151,10 @@ sudo apt install mariadb-server-10.4 -y
 if [ ! $? = 0 ]; then
     exit 1
 fi
+sudo mysql -e "SELECT VERSION();"
+if [ ! $? = 0 ]; then
+    exit 1
+fi
 
 # Add NodeJS official repository and update packages list
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
