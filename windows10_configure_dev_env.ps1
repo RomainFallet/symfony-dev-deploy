@@ -80,7 +80,7 @@ php -r "unlink('composer-setup.php');"
 
 # Make it executable globally
 New-Item -ItemType File -Path C:\tools\composer\composer.bat
-Add-Content C:\tools\composer\composer.bat "@php %~dp0composer.phar"
+Add-Content C:\tools\composer\composer.bat '@php "%~dp0composer.phar" %*'
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
