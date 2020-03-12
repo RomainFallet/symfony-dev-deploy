@@ -486,6 +486,9 @@ MacOS 10.15:
 ```bash
 # Install
 brew install mariadb@10.4
+
+# Start MariaDB
+brew services start mariadb
 ```
 
 Windows 10:
