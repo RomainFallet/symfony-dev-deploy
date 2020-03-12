@@ -194,7 +194,7 @@ Open the Terminal app and type:
 
 ```bash
 # Install
-sudo echo '' && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+sudo -S echo '' && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 
 Windows 10:
