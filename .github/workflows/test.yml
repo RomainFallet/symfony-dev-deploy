@@ -17,4 +17,4 @@ jobs:
     runs-on: [self-hosted, macos]
     steps:
       - name: Test dev environment on macOS
-        run: bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)
+        run: "bash <(curl -L -H 'Cache-Control: no-cache'  https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)"
