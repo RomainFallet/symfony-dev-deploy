@@ -4,7 +4,7 @@ Welcome! Here is what this repository can do for you:
 
 * Provide instructions to configure a similar Symfony development environment on each platform (Ubuntu 18.04 Desktop, macOS 10.15 and Windows 10).
 
-* Provide instructions to configure a deploy environment on an Ubuntu 18.04 Server machine and automate the update process of a Symfony app created with our [starter kit](https://github.com/WildCodeSchool/sf4-pjt3-starter-kit) with Github Actions.
+* Provide instructions to configure a deploy environment on an Ubuntu 18.04 Server machine and automate the update process of a Symfony app.
 
 The goal is to provide an opinionated, fully tested environment, that just work.
 
@@ -67,21 +67,21 @@ Ubuntu 18.04:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)
+bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)
 ```
 
 MacOS 10.15:
 
 ```bash
 # Get and execute script directly
-bash <(curl -L -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)
+bash <(curl -L -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)
 ```
 
 Windows 10:
 
 ```powershell
 # Get and execute script directly
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
 ```
 
 *See [manual instructions](#manual-configuration-dev-environment) for details.*
@@ -96,7 +96,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)
+bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)
 ```
 
 *See [manual instructions](#manual-configuration-deploy-a-new-app) for details.*
@@ -111,7 +111,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)
+bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)
 ```
 
 *Note: just after the "bash" command, you can pass the app name, the domain name and the repository URL as arguments in order to make the script non-interactive (eg. … bash myawesameapp example.com <https://github.com/me/myapp>).*
@@ -126,7 +126,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)
+bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)
 ```
 
 *Note: just after the "bash" command, you can pass the app name as an argument in order to make the script non-interactive (eg. … bash myawesameapp).*
@@ -157,7 +157,7 @@ jobs:
         sshpass -p "${{ secrets.SSH_PASS }}" ssh \
         -tt ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
         -o StrictHostKeyChecking=no \
-        "appname=${{ secrets.APP_NAME }} && $(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+        "appname=${{ secrets.APP_NAME }} && $(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
 ```
 
 *Note: you must define SSH_PASS, SSH_USER, SSH_HOST and APP_NAME variables in the "Settings > Secrets" section of your GitHub repository. The APP_NAME value must match the one used to deploy the app initially.*
@@ -582,7 +582,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get and execute configuration script directly
-wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/WildCodeSchool/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh | bash
+wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh | bash
 ```
 
 ## Manual configuration: deploy environment
