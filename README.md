@@ -193,7 +193,12 @@ On MacOS, there is no package manager by default. We need to install the Homebre
 Open the Terminal app and type:
 
 ```bash
-# Install
+# Install Command Line Tools
+touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+/usr/sbin/softwareupdate -l
+/usr/sbin/softwareupdate -i Command\ Line\ Tools\ for\ Xcode-11.3
+
+# Install Homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 

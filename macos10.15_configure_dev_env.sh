@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Install
+touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
+/usr/sbin/softwareupdate -l
 /usr/sbin/softwareupdate -i Command\ Line\ Tools\ for\ Xcode-11.3
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 if [ ! $? = 0 ]; then
