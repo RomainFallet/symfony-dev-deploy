@@ -1,5 +1,7 @@
 # The Symfony dev & deploy instructions kit
 
+![Dev environment install scripts](https://github.com/RomainFallet/symfony-dev-deploy/workflows/Dev%20environment%20install%20scripts/badge.svg)
+
 Welcome! Here is what this repository can do for you:
 
 * Provide instructions to configure a similar Symfony development environment on each platform (Ubuntu 18.04 Desktop, macOS 10.15 and Windows 10).
