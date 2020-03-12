@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Install
+xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 if [ ! $? = 0 ]; then
     exit 1
