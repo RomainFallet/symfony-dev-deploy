@@ -6,18 +6,15 @@ jobs:
   test-dev-windows:
     runs-on: [self-hosted, windows]
     steps:
-      - uses: actions/checkout@v2
       - name: Test dev environment on Windows
-        run: ./windows10_configure_dev_env.ps1
+        run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/windows10_configure_dev_env.ps1'))
   test-dev-ubuntu:
     runs-on: [self-hosted, linux]
     steps:
-      - uses: actions/checkout@v2
       - name: Test dev environment on Ubuntu
-        run: ./ubuntu18.04_configure_dev_env.sh
+        run: bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/ubuntu18.04_configure_dev_env.sh)
   test-dev-macos:
     runs-on: [self-hosted, macos]
     steps:
-      - uses: actions/checkout@v2
       - name: Test dev environment on macOS
-        run: echo ${{ github.head_ref }} && ./macos10.15_configure_dev_env.sh
+        run: "bash <(curl -L -H 'Cache-Control: no-cache'  https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/macos10.15_configure_dev_env.sh)"
