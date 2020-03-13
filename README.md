@@ -1,5 +1,7 @@
 # The Symfony dev & deploy instructions kit
 
+![Dev environment install scripts](https://github.com/RomainFallet/symfony-dev-deploy/workflows/Dev%20environment%20install%20scripts/badge.svg)
+
 Welcome! Here is what this repository can do for you:
 
 * Provide instructions to configure a similar Symfony development environment on each platform (Ubuntu 18.04 Desktop, macOS 10.15 and Windows 10).
@@ -81,7 +83,7 @@ Windows 10:
 
 ```powershell
 # Get and execute script directly
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
 ```
 
 *See [manual instructions](#manual-configuration-dev-environment) for details.*
@@ -192,7 +194,7 @@ Open the Terminal app and type:
 
 ```bash
 # Install
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 
 Windows 10:
@@ -205,7 +207,7 @@ Open the PowerShell command prompt in administrator mode and type:
 
 ```powershell
 # Install
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Reload your $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -454,7 +456,7 @@ php -r "unlink('composer-setup.php');"
 
 # Make it executable globally
 New-Item -ItemType File -Path C:\tools\composer\composer.bat
-Add-Content C:\tools\composer\composer.bat "@php %~dp0composer.phar"
+Add-Content C:\tools\composer\composer.bat '@php "%~dp0composer.phar" %*'
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -484,6 +486,9 @@ MacOS 10.15:
 ```bash
 # Install
 brew install mariadb@10.4
+
+# Start MariaDB
+brew services start mariadb
 ```
 
 Windows 10:

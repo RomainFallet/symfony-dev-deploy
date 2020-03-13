@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 if [ ! $? = 0 ]; then
     exit 1
 fi
@@ -129,6 +129,14 @@ fi
 
 # Install
 brew install mariadb@10.4
+if [ ! $? = 0 ]; then
+    exit 1
+fi
+brew services start mariadb
+if [ ! $? = 0 ]; then
+    exit 1
+fi
+sudo mysql -e "SELECT VERSION();"
 if [ ! $? = 0 ]; then
     exit 1
 fi

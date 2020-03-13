@@ -1,5 +1,5 @@
 # Install
-Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 # Reload your $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -80,7 +80,7 @@ php -r "unlink('composer-setup.php');"
 
 # Make it executable globally
 New-Item -ItemType File -Path C:\tools\composer\composer.bat
-Add-Content C:\tools\composer\composer.bat "@php %~dp0composer.phar"
+Add-Content C:\tools\composer\composer.bat '@php "%~dp0composer.phar" %*'
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -92,6 +92,8 @@ choco install mariadb --version=10.4.8 -y
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+mysql -e "SELECT VERSION();"
 
 # Install
 choco install nodejs --version=12.13.1 -y
