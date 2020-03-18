@@ -61,3 +61,75 @@ echo 'y' | sudo ufw enable
 if [ ! $? = 0 ]; then
     exit 1
 fi
+
+# Install
+sudo apt install -y fail2ban
+
+# Add SSH configuration
+echo "
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3" | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Add Apache configuration
+echo "
+[apache]
+enabled  = true
+port     = http,https
+filter   = apache-auth
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-noscript]
+enabled  = true
+port     = http,https
+filter   = apache-noscript
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-overflows]
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-nohome]
+enabled  = true
+port     = http,https
+filter   = apache-nohome
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-botsearch]
+enabled  = true
+port     = http,https
+filter   = apache-botsearch
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-shellshock]
+enabled  = true
+port     = http,https
+filter   = apache-shellshock
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-fakegooglebot]
+enabled  = true
+port     = http,https
+filter   = apache-fakegooglebot
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[php-url-fopen]
+enabled = true
+port    = http,https
+filter  = php-url-fopen
+logpath = /var/log/apache*/*access.log " | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Restart Fail2ban
+sudo service fail2ban restart

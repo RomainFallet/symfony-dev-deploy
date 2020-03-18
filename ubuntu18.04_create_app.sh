@@ -126,8 +126,8 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     DocumentRoot /var/www/${appname}/public
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
 </VirtualHost>
 EOF
 if [ ! $? = 0 ]; then
@@ -182,8 +182,8 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     </Directory>
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
 
     # Configure HTTPS
     SSLEngine on
