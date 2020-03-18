@@ -12,8 +12,6 @@ The goal is to provide an opinionated, fully tested environment, that just work.
 
 **This means no headaches trying to configure an environment or a specific tool and no more versions conflicts!**
 
-![tenor](https://user-images.githubusercontent.com/6952638/72103402-6b97af00-3329-11ea-980d-63242df89644.gif)
-
 ## Table of contents
 
 * [Important notice](#important-notice)
