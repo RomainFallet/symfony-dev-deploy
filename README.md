@@ -940,7 +940,7 @@ Ubuntu 18.04 Server:
 ```bash
 # Get app name from parameter or ask user for it (copy and paste all code between "if" and "fi" in your terminal)
 if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
-    read -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
+    read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp): " appname
 else
     appname=${1:-${appname}}
 fi
@@ -954,7 +954,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Go inside the app directory
-cd /var/www/${appname}
+cd "/var/www/${appname}"
 
 # Pull the latest changes
 git pull
