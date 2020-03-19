@@ -740,21 +740,21 @@ Ubuntu 18.04 Server:
 ```bash
 # Get app name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
 if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
-    read -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
+    read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
 else
     appname=${1:-${appname}}
 fi
 
 # Get app domain name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
 if [[ -z ${2} ]] && [[ -z "${appdomain}" ]]; then
-    read -p "Enter the domain name on which you want your app to be served (eg. example.com or test.example.com):" appdomain
+    read -r -p "Enter the domain name on which you want your app to be served (eg. example.com or test.example.com):" appdomain
 else
     appdomain=${2:-${appdomain}}
 fi
 
 # Get app Git repository URL from parameter or ask user for it (copy and paste all stuffs from "if" to "fi" in your terminal)
 if [[ -z ${3} ]] && [[ -z "${apprepositoryurl}" ]]; then
-    read -p "Enter the Git repository URL of your app:" apprepositoryurl
+    read -r -p "Enter the Git repository URL of your app:" apprepositoryurl
 else
     apprepositoryurl=${3:-${apprepositoryurl}}
 fi
@@ -768,10 +768,10 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Clone app repository
-git clone ${apprepositoryurl} /var/www/${appname}
+sudo git clone "${apprepositoryurl}" "/var/www/${appname}"
 
 # Go inside the app directory
-cd /var/www/${appname}
+cd "/var/www/${appname}"
 ```
 
 ### Set up the database and the production mode
@@ -792,15 +792,15 @@ GRANT ALL ON ${appname}.* TO ${appname}@localhost;
 EOF
 
 # Create .env.local file
-cp ./.env ./.env.local
+sudo cp ./.env ./.env.local
 
 # Set APP_ENV to "prod"
-sed -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local > ./.env.local.tmp
-mv ./.env.local.tmp ./.env.local
+sudo sed -i '.tmp' -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local
+sudo rm  ./.env.local.tmp
 
 # Set mysql credentials
-sed -e 's,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://'${appname}':'${mysqlpassword}'@127.0.0.1:3306/'${appname}',g' ./.env.local > ./.env.local.tmp
-mv ./.env.local.tmp ./.env.local
+sudo sed -i '.tmp' -e "s,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://${appname}:${mysqlpassword}@127.0.0.1:3306/${appname},g" ./.env.local
+sudo rm  ./.env.local.tmp
 ```
 
 ### Set permissions
@@ -811,13 +811,13 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Set ownership to Apache
-sudo chown -R www-data:www-data /var/www/${appname}
+sudo chown -R www-data:www-data "/var/www/${appname}"
 
 # Set files permissions to 644
-sudo find /var/www/${appname} -type f -exec chmod 644 {} \;
+sudo find "/var/www/${appname}" -type f -exec chmod 644 {} \;
 
 # Set folders permissions to 755
-sudo find /var/www/${appname} -type d -exec chmod 755 {} \;
+sudo find "/var/www/${appname}" -type d -exec chmod 755 {} \;
 ```
 
 ### Install dependencies and build assets
@@ -855,7 +855,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Create an Apache conf file for the app (copy and paste all stuffs from "cat" to "EOF" in your terminal)
-cat > /etc/apache2/sites-available/${appname}.conf <<EOF
+echo "
 # Listen on port 80 (HTTP)
 <VirtualHost ${appdomain}:80>
     # Set up server name
@@ -867,11 +867,10 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     # Configure separate log files
     ErrorLog /var/log/apache2/${appname}.error.log
     CustomLog /var/log/apache2/${appname}.access.log combined
-</VirtualHost>
-EOF
+</VirtualHost>" | tee "/etc/apache2/sites-available/${appname}.conf" > /dev/null
 
 # Activate Apache conf
-sudo a2ensite ${appname}.conf
+sudo a2ensite "${appname}.conf"
 
 # Restart Apache to make changes available
 sudo service apache2 restart
@@ -885,10 +884,10 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get a new HTTPS certficate
-sudo certbot certonly --webroot -w /var/www/${appname}/public -d ${appdomain}
+sudo certbot certonly --webroot -w "/var/www/${appname}/public" -d "${appdomain}"
 
 # Replace existing conf (copy and paste all stuffs from "cat" to last "EOF" in your terminal)
-cat > /etc/apache2/sites-available/${appname}.conf <<EOF
+echo "
 # Listen for the app domain on port 80 (HTTP)
 <VirtualHost ${appdomain}:80>
     # All we need to do here is redirect to HTTPS
@@ -924,8 +923,7 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     SSLEngine on
     SSLCertificateFile /etc/letsencrypt/live/${appdomain}/fullchain.pem
     SSLCertificateKeyFile /etc/letsencrypt/live/${appdomain}/privkey.pem
-</VirtualHost>
-EOF
+</VirtualHost>" | sudo tee "/etc/apache2/sites-available/${appname}.conf" > /dev/null
 
 # Restart Apache to make changes available
 sudo service apache2 restart
