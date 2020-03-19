@@ -181,7 +181,7 @@ On Ubuntu, CURL is needed in order to install some packages with the default pac
 sudo apt update
 
 # Install
-sudo apt install software-properties-common curl -y
+sudo apt install -y software-properties-common curl
 ```
 
 MacOS 10.15:
@@ -225,7 +225,7 @@ Ubuntu 18.04 Desktop:
 
 ```bash
 # Install
-sudo apt install git -y
+sudo apt install -y git
 ```
 
 MacOS 10.15:
@@ -307,25 +307,22 @@ Ubuntu 18.04 Desktop:
 
 ```bash
 # Add PHP official repository
-sudo add-apt-repository ppa:ondrej/php -y
+sudo add-apt-repository -y ppa:ondrej/php
 
 # Update packages list
 sudo apt update
 
 # Install
-sudo apt install php7.3 -y
+sudo apt install -y php7.3
 
 # Install extensions
-sudo apt install php7.3-mbstring php7.3-mysql php7.3-xml php7.3-curl php7.3-zip php7.3-intl php7.3-gd php-xdebug -y
+sudo apt install -y php7.3-mbstring php7.3-mysql php7.3-xml php7.3-curl php7.3-zip php7.3-intl php7.3-gd php-xdebug
 
 # Update some configuration in php.ini
 phpinipath=$(php -r "echo php_ini_loaded_file();")
-sudo bash -c "sed -e 's/post_max_size = 8M/post_max_size = 64M/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo bash -c "sed -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo bash -c "sed -e 's/memory_limit = 128M/memory_limit = -1/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
+sudo sed -i '.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}"
 
 # Replace default PHP installation in $PATH
 sudo update-alternatives --set php /usr/bin/php7.3
@@ -475,7 +472,7 @@ curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo -E bash
 sudo apt update
 
 # Install
-sudo apt install mariadb-server-10.4 -y
+sudo apt install -y mariadb-server-10.4
 ```
 
 MacOS 10.15:
@@ -511,7 +508,7 @@ Ubuntu 18.04 Desktop:
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 
 # Install
-sudo apt install nodejs -y
+sudo apt install -y nodejs
 ```
 
 MacOS 10.15:
