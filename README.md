@@ -12,8 +12,6 @@ The goal is to provide an opinionated, fully tested environment, that just work.
 
 **This means no headaches trying to configure an environment or a specific tool and no more versions conflicts!**
 
-![tenor](https://user-images.githubusercontent.com/6952638/72103402-6b97af00-3329-11ea-980d-63242df89644.gif)
-
 ## Table of contents
 
 * [Important notice](#important-notice)
@@ -36,6 +34,7 @@ The goal is to provide an opinionated, fully tested environment, that just work.
     1. [Apache 2](#apache-2)
     2. [Certbot](#certbot)
     3. [Firewall](#firewall)
+    4. [Fail2ban](#fail2ban)
 * [Manual configuration: deploy a new app](#manual-configuration-deploy-a-new-app)
    1. [Set up variables](#set-up-variables)
    2. [Download our app](#download-our-app)
@@ -644,6 +643,88 @@ sudo ufw allow in "Apache Full"
 echo 'y' | sudo ufw enable
 ```
 
+### Fail2ban
+
+[Back to top ↑](#table-of-contents)
+
+Preventing remote access from others sotwares than SSH and Apache in not enough. We are still vulnerable to brute-force attacks through these services. We will use Fail2ban to protect us.
+
+Ubuntu 18.04 Server:
+
+```bash
+# Install
+sudo apt install -y fail2ban
+
+# Add SSH configuration
+echo "
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3" | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Add Apache configuration
+echo "
+[apache]
+enabled  = true
+port     = http,https
+filter   = apache-auth
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-noscript]
+enabled  = true
+port     = http,https
+filter   = apache-noscript
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-overflows]
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-nohome]
+enabled  = true
+port     = http,https
+filter   = apache-nohome
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-botsearch]
+enabled  = true
+port     = http,https
+filter   = apache-botsearch
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-shellshock]
+enabled  = true
+port     = http,https
+filter   = apache-shellshock
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-fakegooglebot]
+enabled  = true
+port     = http,https
+filter   = apache-fakegooglebot
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[php-url-fopen]
+enabled = true
+port    = http,https
+filter  = php-url-fopen
+logpath = /var/log/apache*/*access.log" | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Restart Fail2ban
+sudo service fail2ban restart
+```
+
 ## Manual configuration: deploy a new app
 
 *Note: you first need to add a A or AAAA record on your domain name poiting to this machine IP address.*
@@ -784,8 +865,8 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     DocumentRoot /var/www/${appname}/public
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
 </VirtualHost>
 EOF
 
@@ -836,8 +917,8 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     </Directory>
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
 
     # Configure HTTPS
     SSLEngine on
