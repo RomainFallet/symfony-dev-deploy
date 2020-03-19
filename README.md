@@ -548,7 +548,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update
 
 # Install
-sudo apt install yarn=1.21* -y
+sudo apt install -y yarn=1.21*
 ```
 
 MacOS 10.15:
