@@ -111,11 +111,16 @@ bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/sy
 Ubuntu 18.04 Server:
 
 ```bash
-# Get and execute script directly
+# Get and execute script in interactive mode
 bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)"
 ```
 
-*Note: just after the "bash" command, you can pass the app name, the domain name and the repository URL as arguments in order to make the script non-interactive (eg. … bash myawesameapp example.com <https://github.com/me/myapp>).*
+*Note: you can make the script non-interactive by passing variables before the "bash" command.*
+
+```bash
+# Get and execute script directly
+appname=<name> appdomain=<domain> apprepositoryurl=<repositoryurl> bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)"
+```
 
 *See [manual instructions](#manual-configuration-deploy-a-new-app) for details.*
 
@@ -126,11 +131,16 @@ bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/sy
 Ubuntu 18.04 Server:
 
 ```bash
-# Get and execute script directly
-bash -c "$(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+# Get and execute script in interactive mode
+bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
 ```
 
-*Note: just after the "bash" command, you can pass the app name as an argument in order to make the script non-interactive (eg. … bash myawesameapp).*
+*Note: you can make the script non-interactive by passing variable before the "bash" command.*
+
+```bash
+# Get and execute script directly
+appname=<name> bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+```
 
 *See [manual instructions](#manual-configuration-deploy-updates-of-an-existing-app) for details.*
 
@@ -154,11 +164,7 @@ jobs:
 
     steps:
     - name: Deploy through SSH
-      run: |
-        sshpass -p "${{ secrets.SSH_PASS }}" ssh \
-        -tt ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-        -o StrictHostKeyChecking=no \
-        "appname=${{ secrets.APP_NAME }} && $(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+      run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -tt "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" -o StrictHostKeyChecking=no "appname=${{ secrets.APP_NAME }} bash -c '$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)'"
 ```
 
 *Note: you must define SSH_PASS, SSH_USER, SSH_HOST and APP_NAME variables in the "Settings > Secrets" section of your GitHub repository. The APP_NAME value must match the one used to deploy the app initially.*

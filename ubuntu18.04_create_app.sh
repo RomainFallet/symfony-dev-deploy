@@ -1,24 +1,18 @@
 #!/bin/bash
 
 # Get app name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
-if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
+if [[ -z "${appname}" ]]; then
     read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
-else
-    appname=${1:-${appname}}
 fi
 
 # Get app domain name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
-if [[ -z ${2} ]] && [[ -z "${appdomain}" ]]; then
+if [[ -z "${appdomain}" ]]; then
     read -r -p "Enter the domain name on which you want your app to be served (eg. example.com or test.example.com):" appdomain
-else
-    appdomain=${2:-${appdomain}}
 fi
 
 # Get app Git repository URL from parameter or ask user for it (copy and paste all stuffs from "if" to "fi" in your terminal)
-if [[ -z ${3} ]] && [[ -z "${apprepositoryurl}" ]]; then
+if [[ -z "${apprepositoryurl}" ]]; then
     read -r -p "Enter the Git repository URL of your app:" apprepositoryurl
-else
-    apprepositoryurl=${3:-${apprepositoryurl}}
 fi
 
 # Clone app repository

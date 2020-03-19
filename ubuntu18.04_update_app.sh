@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # Get app name from parameter or ask user for it (copy and paste all code between "if" and "fi" in your terminal)
-if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
+if [[ -z "${appname}" ]]; then
     read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp): " appname
-else
-    appname=${1:-${appname}}
 fi
 
 # Go inside the app directory
