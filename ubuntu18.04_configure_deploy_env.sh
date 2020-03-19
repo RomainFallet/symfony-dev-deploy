@@ -1,63 +1,28 @@
 #!/bin/bash
 
 # Update packages list
-sudo apt update
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo apt update; then exit 1; fi
 
 # Install
-sudo apt install apache2 -y
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo apt install-y apache2; then exit 1; fi
 
 # Enable modules
-sudo a2enmod ssl
-if [ ! $? = 0 ]; then
-    exit 1
-fi
-sudo a2enmod rewrite
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo a2enmod ssl; then exit 1; fi
+if ! sudo a2enmod rewrite; then exit 1; fi
 
 # Copy php.ini CLI configuration
-sudo mv $(php -r "echo php_ini_loaded_file();") /etc/php/7.3/apache2/php.ini
-if [ ! $? = 0 ]; then
-    exit 1
-fi
-apache2 -v
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+phpinipath=$(php -r "echo php_ini_loaded_file();")
+if ! sudo mv "${phpinipath}" /etc/php/7.3/apache2/php.ini; then exit 1; fi
+if ! apache2 -v; then exit 1; fi
 
 # Add Certbot official repositories
-sudo add-apt-repository universe
-if [ ! $? = 0 ]; then
-    exit 1
-fi
-sudo add-apt-repository ppa:certbot/certbot -y
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo add-apt-repository universe; then exit 1; fi
+if ! sudo add-apt-repository -y ppa:certbot/certbot; then exit 1; fi
 
 # Install
-sudo apt install certbot -y
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo apt install -y certbot; then exit 1; fi
 
 # Add rules and activate firewall
-sudo ufw allow OpenSSH
-if [ ! $? = 0 ]; then
-    exit 1
-fi
-sudo ufw allow in "Apache Full"
-if [ ! $? = 0 ]; then
-    exit 1
-fi
-echo 'y' | sudo ufw enable
-if [ ! $? = 0 ]; then
-    exit 1
-fi
+if ! sudo ufw allow OpenSSH; then exit 1; fi
+if ! sudo ufw allow in "Apache Full"; then exit 1; fi
+if ! echo 'y' | sudo ufw enable; then exit 1; fi
