@@ -7,7 +7,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 choco -v
 
 # Install
-choco install git -y
+choco install -y git
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -36,7 +36,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 symfony -V
 
 # Install
-choco install php --version=7.3.12 -y
+choco install -y php --version=7.3.12
 
 # Install extensions
 iwr -outf C:\tools\php73\ext\php_xdebug.dll http://xdebug.org/files/php_xdebug-2.9.0-7.3-vc15-nts-x86_64.dll
@@ -88,7 +88,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 composer -V
 
 # Install
-choco install mariadb --version=10.4.8 -y
+choco install -y mariadb --version=10.4.8
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -96,7 +96,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 mysql -e "SELECT VERSION();"
 
 # Install
-choco install nodejs --version=12.13.1 -y
+choco install -y nodejs --version=12.13.1
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -105,7 +105,7 @@ node -v
 npm -v
 
 # Install
-choco install yarn --version=1.21.1 -y
+choco install -y yarn --version=1.21.1
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
