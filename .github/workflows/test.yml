@@ -24,4 +24,4 @@ jobs:
     runs-on: [self-hosted, linux]
     steps:
       - name: Test deploy environment install on Ubuntu
-        run: bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)" && bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)"
+        run: bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)"
