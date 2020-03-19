@@ -1,46 +1,46 @@
 #!/bin/bash
 
 # Update packages list
-if ! sudo apt update; then exit 1; fi
+sudo apt update || exit 1
 
 # Install
-if ! sudo apt install-y apache2; then exit 1; fi
+sudo apt install-y apache2 || exit 1
 
 # Enable modules
-if ! sudo a2enmod ssl; then exit 1; fi
-if ! sudo a2enmod rewrite; then exit 1; fi
+sudo a2enmod ssl || exit 1
+sudo a2enmod rewrite || exit 1
 
 # Copy php.ini CLI configuration
 phpinipath=$(php -r "echo php_ini_loaded_file();")
-if ! sudo mv "${phpinipath}" /etc/php/7.3/apache2/php.ini; then exit 1; fi
-if ! apache2 -v; then exit 1; fi
+sudo mv "${phpinipath}" /etc/php/7.3/apache2/php.ini || exit 1
+apache2 -v || exit 1
 
 # Add Certbot official repositories
-if ! sudo add-apt-repository universe; then exit 1; fi
-if ! sudo add-apt-repository -y ppa:certbot/certbot; then exit 1; fi
+sudo add-apt-repository universe || exit 1
+sudo add-apt-repository -y ppa:certbot/certbot || exit 1
 
 # Install
-if ! sudo apt install -y certbot; then exit 1; fi
+sudo apt install -y certbot || exit 1
 
 # Add rules and activate firewall
-if ! sudo ufw allow OpenSSH; then exit 1; fi
-if ! sudo ufw allow in "Apache Full"; then exit 1; fi
-if ! echo 'y' | sudo ufw enable; then exit 1; fi
+sudo ufw allow OpenSSH || exit 1
+sudo ufw allow in "Apache Full" || exit 1
+echo 'y' | sudo ufw enable || exit 1
 
 # Install
-if ! sudo apt install -y fail2ban; then exit 1; fi
+sudo apt install -y fail2ban || exit 1
 
 # Add SSH configuration
-if ! echo "
+echo "
 [sshd]
 enabled = true
 port = 22
 filter = sshd
 logpath = /var/log/auth.log
-maxretry = 3" | sudo tee -a /etc/fail2ban/jail.local > /dev/null; then exit 1; fi
+maxretry = 3" | sudo tee -a /etc/fail2ban/jail.local > /dev/null || exit 1
 
 # Add Apache configuration
-if ! echo "
+echo "
 [apache]
 enabled  = true
 port     = http,https
@@ -94,7 +94,7 @@ maxretry = 2
 enabled = true
 port    = http,https
 filter  = php-url-fopen
-logpath = /var/log/apache*/*access.log " | sudo tee -a /etc/fail2ban/jail.local > /dev/null; then exit 1; fi
+logpath = /var/log/apache*/*access.log " | sudo tee -a /etc/fail2ban/jail.local > /dev/null || exit 1
 
 # Restart Fail2ban
-if ! sudo service fail2ban restart; then exit 1; fi
+sudo service fail2ban restart || exit 1
