@@ -12,8 +12,6 @@ The goal is to provide an opinionated, fully tested environment, that just work.
 
 **This means no headaches trying to configure an environment or a specific tool and no more versions conflicts!**
 
-![tenor](https://user-images.githubusercontent.com/6952638/72103402-6b97af00-3329-11ea-980d-63242df89644.gif)
-
 ## Table of contents
 
 * [Important notice](#important-notice)
@@ -36,6 +34,7 @@ The goal is to provide an opinionated, fully tested environment, that just work.
     1. [Apache 2](#apache-2)
     2. [Certbot](#certbot)
     3. [Firewall](#firewall)
+    4. [Fail2ban](#fail2ban)
 * [Manual configuration: deploy a new app](#manual-configuration-deploy-a-new-app)
    1. [Set up variables](#set-up-variables)
    2. [Download our app](#download-our-app)
@@ -69,21 +68,21 @@ Ubuntu 18.04:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)
+bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)"
 ```
 
 MacOS 10.15:
 
 ```bash
 # Get and execute script directly
-bash <(curl -L -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)
+bash -c "$(curl -L -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)"
 ```
 
 Windows 10:
 
 ```powershell
 # Get and execute script directly
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
 ```
 
 *See [manual instructions](#manual-configuration-dev-environment) for details.*
@@ -98,7 +97,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)
+bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)"
 ```
 
 *See [manual instructions](#manual-configuration-deploy-a-new-app) for details.*
@@ -112,11 +111,16 @@ bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/Romain
 Ubuntu 18.04 Server:
 
 ```bash
-# Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)
+# Get and execute script in interactive mode
+bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)"
 ```
 
-*Note: just after the "bash" command, you can pass the app name, the domain name and the repository URL as arguments in order to make the script non-interactive (eg. … bash myawesameapp example.com <https://github.com/me/myapp>).*
+*Note: you can make the script non-interactive by passing variables before the "bash" command.*
+
+```bash
+# Get and execute script directly
+appname=<name> appdomain=<domain> apprepositoryurl=<repositoryurl> bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_create_app.sh)"
+```
 
 *See [manual instructions](#manual-configuration-deploy-a-new-app) for details.*
 
@@ -127,11 +131,16 @@ bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/Romain
 Ubuntu 18.04 Server:
 
 ```bash
-# Get and execute script directly
-bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)
+# Get and execute script in interactive mode
+bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
 ```
 
-*Note: just after the "bash" command, you can pass the app name as an argument in order to make the script non-interactive (eg. … bash myawesameapp).*
+*Note: you can make the script non-interactive by passing variable before the "bash" command.*
+
+```bash
+# Get and execute script directly
+appname=<name> bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+```
 
 *See [manual instructions](#manual-configuration-deploy-updates-of-an-existing-app) for details.*
 
@@ -155,11 +164,7 @@ jobs:
 
     steps:
     - name: Deploy through SSH
-      run: |
-        sshpass -p "${{ secrets.SSH_PASS }}" ssh \
-        -tt ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-        -o StrictHostKeyChecking=no \
-        "appname=${{ secrets.APP_NAME }} && $(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)"
+      run: sshpass -p "${{ secrets.SSH_PASS }}" ssh -tt "${{ secrets.SSH_USER }}"@"${{ secrets.SSH_HOST }}" -o StrictHostKeyChecking=no "appname=${{ secrets.APP_NAME }} bash -c '$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_update_app.sh)'"
 ```
 
 *Note: you must define SSH_PASS, SSH_USER, SSH_HOST and APP_NAME variables in the "Settings > Secrets" section of your GitHub repository. The APP_NAME value must match the one used to deploy the app initially.*
@@ -181,7 +186,7 @@ On Ubuntu, CURL is needed in order to install some packages with the default pac
 sudo apt update
 
 # Install
-sudo apt install software-properties-common curl -y
+sudo apt install -y software-properties-common curl
 ```
 
 MacOS 10.15:
@@ -225,7 +230,7 @@ Ubuntu 18.04 Desktop:
 
 ```bash
 # Install
-sudo apt install git -y
+sudo apt install -y git
 ```
 
 MacOS 10.15:
@@ -242,7 +247,7 @@ Windows 10:
 
 ```powershell
 # Install
-choco install git -y
+choco install -y git
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -307,25 +312,22 @@ Ubuntu 18.04 Desktop:
 
 ```bash
 # Add PHP official repository
-sudo add-apt-repository ppa:ondrej/php -y
+sudo add-apt-repository -y ppa:ondrej/php
 
 # Update packages list
 sudo apt update
 
 # Install
-sudo apt install php7.3 -y
+sudo apt install -y php7.3
 
 # Install extensions
-sudo apt install php7.3-mbstring php7.3-mysql php7.3-xml php7.3-curl php7.3-zip php7.3-intl php7.3-gd php-xdebug -y
+sudo apt install -y php7.3-mbstring php7.3-mysql php7.3-xml php7.3-curl php7.3-zip php7.3-intl php7.3-gd php-xdebug
 
 # Update some configuration in php.ini
 phpinipath=$(php -r "echo php_ini_loaded_file();")
-sudo bash -c "sed -e 's/post_max_size = 8M/post_max_size = 64M/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo bash -c "sed -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo bash -c "sed -e 's/memory_limit = 128M/memory_limit = -1/g' ${phpinipath} > ./php.ini.tmp"
-sudo mv ./php.ini.tmp ${phpinipath}
+sudo sed -i '.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}"
 
 # Replace default PHP installation in $PATH
 sudo update-alternatives --set php /usr/bin/php7.3
@@ -352,12 +354,9 @@ pecl install xdebug
 
 # Update some configuration in php.ini
 phpinipath=$(php -r "echo php_ini_loaded_file();")
-sudo sed -i '' -e 's/post_max_size = 8M/post_max_size = 64M/g' ${phpinipath} > ./php.ini.tmp
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo sed -i '' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' ${phpinipath} > ./php.ini.tmp
-sudo mv ./php.ini.tmp ${phpinipath}
-sudo sed -i '' -e 's/memory_limit = 128M/memory_limit = -1/g' ${phpinipath} > ./php.ini.tmp
-sudo ./php.ini.tmp ${phpinipath}
+sudo sed -i '.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}"
+sudo sed -i '.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}"
 ```
 
 **Installed PHP Modules:** bcmath, bz2, calendar, Core, ctype, curl, date, dba, dom, exif, fileinfo, filter, ftp, gd, gettext, gmp, hash, iconv, intl, json, ldap, libxml, mbstring, mysqli, mysqlnd, odbc, openssl, pcntl, pcre, PDO, pdo_dblib, pdo_mysql, PDO_ODBC, pdo_pgsql, pdo_sqlite, pgsql, Phar, phpdbg_webhelper, posix, pspell, readline, Reflection, session, shmop, SimpleXML, soap, sockets, sodium, SPL, sqlite3, standard, sysvmsg, sysvsem, sysvshm, tidy, tokenizer, wddx, xdebug, xml, xmlreader, xmlrpc, xmlwriter, xsl, Zend OPcache, zip, zlib
@@ -368,7 +367,7 @@ Windows 10:
 
 ```powershell
 # Install
-choco install php --version=7.3.12 -y
+choco install -y php --version=7.3.12
 
 # Install extensions
 iwr -outf C:\tools\php73\ext\php_xdebug.dll http://xdebug.org/files/php_xdebug-2.9.0-7.3-vc15-nts-x86_64.dll
@@ -478,7 +477,7 @@ curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo -E bash
 sudo apt update
 
 # Install
-sudo apt install mariadb-server-10.4 -y
+sudo apt install -y mariadb-server-10.4
 ```
 
 MacOS 10.15:
@@ -495,7 +494,7 @@ Windows 10:
 
 ```powershell
 # Install
-choco install mariadb --version=10.4.8 -y
+choco install -y mariadb --version=10.4.8
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -514,7 +513,7 @@ Ubuntu 18.04 Desktop:
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 
 # Install
-sudo apt install nodejs -y
+sudo apt install -y nodejs
 ```
 
 MacOS 10.15:
@@ -531,7 +530,7 @@ Windows 10:
 
 ```powershell
 # Install
-choco install nodejs --version=12.13.1 -y
+choco install -y nodejs --version=12.13.1
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -554,7 +553,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt update
 
 # Install
-sudo apt install yarn=1.21* -y
+sudo apt install -y yarn=1.21*
 ```
 
 MacOS 10.15:
@@ -571,7 +570,7 @@ Windows 10:
 
 ```powershell
 # Install
-choco install yarn --version=1.21.1 -y
+choco install -y yarn --version=1.21.1
 
 # Reload $PATH
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -605,14 +604,15 @@ Ubuntu 18.04 Server:
 sudo apt update
 
 # Install
-sudo apt install apache2 -y
+sudo apt install -y apache2
 
 # Enable modules
 sudo a2enmod ssl
 sudo a2enmod rewrite
 
 # Copy php.ini CLI configuration
-sudo mv $(php -r "echo php_ini_loaded_file();") /etc/php/7.3/apache2/php.ini
+phpinipath=$(php -r "echo php_ini_loaded_file();")
+sudo mv "${phpinipath}" /etc/php/7.3/apache2/php.ini
 ```
 
 **Installed Apache Modules:** core_module, so_module, watchdog_module, http_module, log_config_module, logio_module, version_module, unixd_module, access_compat_module, alias_module, auth_basic_module, authn_core_module, authn_file_module, authz_core_module, authz_host_module, authz_user_module, autoindex_module, deflate_module, dir_module, env_module, filter_module, mime_module, mpm_prefork_module, negotiation_module, php7_module, reqtimeout_module, rewrite_module, setenvif_module, socache_shmcb_module, ssl_module, status_module
@@ -628,10 +628,10 @@ Ubuntu 18.04 Server:
 ```bash
 # Add Certbot official repositories
 sudo add-apt-repository universe
-sudo add-apt-repository ppa:certbot/certbot -y
+sudo add-apt-repository -y ppa:certbot/certbot
 
 # Install
-sudo apt install certbot -y
+sudo apt install -y certbot
 ```
 
 ### Firewall
@@ -649,6 +649,88 @@ sudo ufw allow in "Apache Full"
 echo 'y' | sudo ufw enable
 ```
 
+### Fail2ban
+
+[Back to top ↑](#table-of-contents)
+
+Preventing remote access from others sotwares than SSH and Apache in not enough. We are still vulnerable to brute-force attacks through these services. We will use Fail2ban to protect us.
+
+Ubuntu 18.04 Server:
+
+```bash
+# Install
+sudo apt install -y fail2ban
+
+# Add SSH configuration
+echo "
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3" | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Add Apache configuration
+echo "
+[apache]
+enabled  = true
+port     = http,https
+filter   = apache-auth
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-noscript]
+enabled  = true
+port     = http,https
+filter   = apache-noscript
+logpath  = /var/log/apache*/*error.log
+maxretry = 6
+
+[apache-overflows]
+enabled  = true
+port     = http,https
+filter   = apache-overflows
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-nohome]
+enabled  = true
+port     = http,https
+filter   = apache-nohome
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-botsearch]
+enabled  = true
+port     = http,https
+filter   = apache-botsearch
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-shellshock]
+enabled  = true
+port     = http,https
+filter   = apache-shellshock
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[apache-fakegooglebot]
+enabled  = true
+port     = http,https
+filter   = apache-fakegooglebot
+logpath  = /var/log/apache*/*error.log
+maxretry = 2
+
+[php-url-fopen]
+enabled = true
+port    = http,https
+filter  = php-url-fopen
+logpath = /var/log/apache*/*access.log" | sudo tee -a /etc/fail2ban/jail.local > /dev/null
+
+# Restart Fail2ban
+sudo service fail2ban restart
+```
+
 ## Manual configuration: deploy a new app
 
 *Note: you first need to add a A or AAAA record on your domain name poiting to this machine IP address.*
@@ -664,21 +746,21 @@ Ubuntu 18.04 Server:
 ```bash
 # Get app name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
 if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
-    read -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
+    read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
 else
     appname=${1:-${appname}}
 fi
 
 # Get app domain name from parameter or ask user for it (copy and paste all stuffs between "if" and "fi" in your terminal)
 if [[ -z ${2} ]] && [[ -z "${appdomain}" ]]; then
-    read -p "Enter the domain name on which you want your app to be served (eg. example.com or test.example.com):" appdomain
+    read -r -p "Enter the domain name on which you want your app to be served (eg. example.com or test.example.com):" appdomain
 else
     appdomain=${2:-${appdomain}}
 fi
 
 # Get app Git repository URL from parameter or ask user for it (copy and paste all stuffs from "if" to "fi" in your terminal)
 if [[ -z ${3} ]] && [[ -z "${apprepositoryurl}" ]]; then
-    read -p "Enter the Git repository URL of your app:" apprepositoryurl
+    read -r -p "Enter the Git repository URL of your app:" apprepositoryurl
 else
     apprepositoryurl=${3:-${apprepositoryurl}}
 fi
@@ -692,10 +774,10 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Clone app repository
-git clone ${apprepositoryurl} /var/www/${appname}
+sudo git clone "${apprepositoryurl}" "/var/www/${appname}"
 
 # Go inside the app directory
-cd /var/www/${appname}
+cd "/var/www/${appname}"
 ```
 
 ### Set up the database and the production mode
@@ -716,15 +798,15 @@ GRANT ALL ON ${appname}.* TO ${appname}@localhost;
 EOF
 
 # Create .env.local file
-cp ./.env ./.env.local
+sudo cp ./.env ./.env.local
 
 # Set APP_ENV to "prod"
-sed -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local > ./.env.local.tmp
-mv ./.env.local.tmp ./.env.local
+sudo sed -i '.tmp' -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local
+sudo rm  ./.env.local.tmp
 
 # Set mysql credentials
-sed -e 's,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://'${appname}':'${mysqlpassword}'@127.0.0.1:3306/'${appname}',g' ./.env.local > ./.env.local.tmp
-mv ./.env.local.tmp ./.env.local
+sudo sed -i '.tmp' -e "s,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://${appname}:${mysqlpassword}@127.0.0.1:3306/${appname},g" ./.env.local
+sudo rm  ./.env.local.tmp
 ```
 
 ### Set permissions
@@ -735,13 +817,13 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Set ownership to Apache
-sudo chown -R www-data:www-data /var/www/${appname}
+sudo chown -R www-data:www-data "/var/www/${appname}"
 
 # Set files permissions to 644
-sudo find /var/www/${appname} -type f -exec chmod 644 {} \;
+sudo find "/var/www/${appname}" -type f -exec chmod 644 {} \;
 
 # Set folders permissions to 755
-sudo find /var/www/${appname} -type d -exec chmod 755 {} \;
+sudo find "/var/www/${appname}" -type d -exec chmod 755 {} \;
 ```
 
 ### Install dependencies and build assets
@@ -779,7 +861,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Create an Apache conf file for the app (copy and paste all stuffs from "cat" to "EOF" in your terminal)
-cat > /etc/apache2/sites-available/${appname}.conf <<EOF
+echo "
 # Listen on port 80 (HTTP)
 <VirtualHost ${appdomain}:80>
     # Set up server name
@@ -789,13 +871,12 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     DocumentRoot /var/www/${appname}/public
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
-</VirtualHost>
-EOF
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
+</VirtualHost>" | tee "/etc/apache2/sites-available/${appname}.conf" > /dev/null
 
 # Activate Apache conf
-sudo a2ensite ${appname}.conf
+sudo a2ensite "${appname}.conf"
 
 # Restart Apache to make changes available
 sudo service apache2 restart
@@ -809,10 +890,10 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Get a new HTTPS certficate
-sudo certbot certonly --webroot -w /var/www/${appname}/public -d ${appdomain}
+sudo certbot certonly --webroot -w "/var/www/${appname}/public" -d "${appdomain}"
 
 # Replace existing conf (copy and paste all stuffs from "cat" to last "EOF" in your terminal)
-cat > /etc/apache2/sites-available/${appname}.conf <<EOF
+echo "
 # Listen for the app domain on port 80 (HTTP)
 <VirtualHost ${appdomain}:80>
     # All we need to do here is redirect to HTTPS
@@ -841,15 +922,14 @@ cat > /etc/apache2/sites-available/${appname}.conf <<EOF
     </Directory>
 
     # Configure separate log files
-    ErrorLog /var/log/apache2/error.${appname}.log
-    CustomLog /var/log/apache2/access.${appname}.log combined
+    ErrorLog /var/log/apache2/${appname}.error.log
+    CustomLog /var/log/apache2/${appname}.access.log combined
 
     # Configure HTTPS
     SSLEngine on
     SSLCertificateFile /etc/letsencrypt/live/${appdomain}/fullchain.pem
     SSLCertificateKeyFile /etc/letsencrypt/live/${appdomain}/privkey.pem
-</VirtualHost>
-EOF
+</VirtualHost>" | sudo tee "/etc/apache2/sites-available/${appname}.conf" > /dev/null
 
 # Restart Apache to make changes available
 sudo service apache2 restart
@@ -866,7 +946,7 @@ Ubuntu 18.04 Server:
 ```bash
 # Get app name from parameter or ask user for it (copy and paste all code between "if" and "fi" in your terminal)
 if [[ -z ${1} ]] && [[ -z "${appname}" ]]; then
-    read -p "Enter the name of your app without hyphens (eg. myawesomeapp):" appname
+    read -r -p "Enter the name of your app without hyphens (eg. myawesomeapp): " appname
 else
     appname=${1:-${appname}}
 fi
@@ -880,7 +960,7 @@ Ubuntu 18.04 Server:
 
 ```bash
 # Go inside the app directory
-cd /var/www/${appname}
+cd "/var/www/${appname}"
 
 # Pull the latest changes
 git pull

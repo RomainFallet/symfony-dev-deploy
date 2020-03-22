@@ -1,20 +1,24 @@
 name: Dev environment install scripts
 
-on: [pull_request]
+on:
+  pull_request:
+    branches: [master]
 
 jobs:
-  test-dev-windows:
-    runs-on: [self-hosted, windows]
-    steps:
-      - name: Test dev environment on Windows
-        run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/windows10_configure_dev_env.ps1'))
-  test-dev-ubuntu:
+  test-dev-deploy-ubuntu:
     runs-on: [self-hosted, linux]
     steps:
-      - name: Test dev environment on Ubuntu
-        run: bash <(wget --no-cache -o /dev/null -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/ubuntu18.04_configure_dev_env.sh)
+      - name: Test dev environment install on Ubuntu
+        run: bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_dev_env.sh)"
+      - name: Test deploy environment install on Ubuntu
+        run: bash -c "$(wget --no-cache -O- https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/ubuntu18.04_configure_deploy_env.sh)"
   test-dev-macos:
     runs-on: [self-hosted, macos]
     steps:
-      - name: Test dev environment on macOS
-        run: "bash <(curl -L -H 'Cache-Control: no-cache'  https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/${{ github.head_ref }}/macos10.15_configure_dev_env.sh)"
+      - name: Test dev environment install on macOS
+        run: "bash -c \"$(curl -L -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/macos10.15_configure_dev_env.sh)\""
+  test-dev-windows:
+    runs-on: [self-hosted, windows]
+    steps:
+      - name: Test dev environment install on Windows
+        run: Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/RomainFallet/symfony-dev-deploy/master/windows10_configure_dev_env.ps1'))
