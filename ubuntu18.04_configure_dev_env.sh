@@ -32,9 +32,9 @@ sudo apt install -y php7.3-mbstring php7.3-mysql php7.3-xml php7.3-curl php7.3-z
 
 # Update some configuration in php.ini
 phpinipath=$(php -r "echo php_ini_loaded_file();") || exit 1
-sudo sed -i '.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}" || exit 1
-sudo sed -i '.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}" || exit 1
-sudo sed -i '.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}" || exit 1
 
 # Replace default PHP installation in $PATH
 sudo update-alternatives --set php /usr/bin/php7.3 || exit 1
