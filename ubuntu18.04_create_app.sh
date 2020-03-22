@@ -34,11 +34,11 @@ GRANT ALL ON ${appname}.* TO ${appname}@localhost;" || exit 1
 sudo cp ./.env ./.env.local || exit 1
 
 # Set APP_ENV to "prod"
-sudo sed -i '.tmp' -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local || exit 1
+sudo sed -i'.tmp' -e 's/APP_ENV=dev/APP_ENV=prod/g' ./.env.local || exit 1
 sudo rm  ./.env.local.tmp || exit 1
 
 # Set mysql credentials
-sudo sed -i '.tmp' -e "s,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://${appname}:${mysqlpassword}@127.0.0.1:3306/${appname},g" ./.env.local || exit 1
+sudo sed -i'.tmp' -e "s,DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name,DATABASE_URL=mysql://${appname}:${mysqlpassword}@127.0.0.1:3306/${appname},g" ./.env.local || exit 1
 sudo rm  ./.env.local.tmp || exit 1
 
 # Set ownership to Apache

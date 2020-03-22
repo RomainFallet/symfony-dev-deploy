@@ -31,9 +31,9 @@ pecl install xdebug || exit 1
 
 # Update some configuration in php.ini
 phpinipath=$(php -r "echo php_ini_loaded_file();") || exit 1
-sudo sed -i '.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}" || exit 1
-sudo sed -i '.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}" || exit 1
-sudo sed -i '.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/post_max_size = 8M/post_max_size = 64M/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/upload_max_filesize = 8M/upload_max_filesize = 64M/g' "${phpinipath}" || exit 1
+sudo sed -i'.backup' -e 's/memory_limit = 128M/memory_limit = -1/g' "${phpinipath}" || exit 1
 php -v || exit 1
 
 # Download installer
